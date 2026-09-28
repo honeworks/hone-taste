@@ -10,8 +10,8 @@ jobs:
       fail-fast: false
       matrix: { python: ["3.11", "3.12", "3.13"] }
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
         with: { python-version: "${{ matrix.python }}", enable-cache: true }
       # Light extras only: the default suite runs without torch / transformers / CUDA. The heavy extras
       # (text, detect, images, songs) are covered by the real-model tests (-m gpu), run locally.
@@ -24,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
       - run: uv build
       - name: Smoke test the wheel in a clean env
         run: |
@@ -33,5 +33,5 @@ jobs:
           uv pip install --python /tmp/smoke/bin/python dist/*.whl
           /tmp/smoke/bin/python -c "import hone_taste; print(hone_taste.__version__)"
           /tmp/smoke/bin/python tests/smoke_quickstart.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with: { name: dist, path: dist/ }
