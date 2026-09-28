@@ -1,0 +1,119 @@
+[project]
+name = "hone-taste"
+dynamic = ["version"]
+description = "Stand-in scorers for human judgment: taste models, human-likeness checks, audience panels, personal taste."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "Bahman Shadmehr", email = "info@bshadmehr.me" }]
+keywords = [
+    "ai", "llm", "generative-ai", "evaluation", "taste", "human-preference", "reward-model",
+    "ai-detection", "audience-simulation", "scoring", "honeworks",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+cli = ["typer>=0.12", "rich>=13.7"]
+openai = ["openai>=1.40"]
+text = ["torch>=2.2", "transformers>=4.56"]
+detect = ["torch>=2.2", "transformers>=4.56"]
+images = ["torch>=2.2", "transformers>=4.56", "pillow>=10"]
+# MuQ (SongEval's encoder) breaks on transformers 5 (config._attn_implementation), hence < 5
+songs = [
+    "torch>=2.2", "transformers>=4.56,<5", "librosa>=0.10", "muq>=0.1", "safetensors>=0.4",
+    "audiobox-aesthetics>=0.0.4", "soundfile>=0.12", "numpy>=1.24", "scipy>=1.10",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8", "pytest-cov>=5", "pytest-timeout>=2.3", "hypothesis>=6.100",
+    "ruff>=0.6", "pyright>=1.1.380",
+]
+# CPU-only audio libraries so CI can run the audio-check tests without the torch-based `songs` extra
+audio-tests = ["numpy>=1.24", "scipy>=1.10", "soundfile>=0.12", "librosa>=0.10"]
+
+[project.urls]
+Homepage = "https://github.com/honeworks/hone-taste"
+Repository = "https://github.com/honeworks/hone-taste"
+Issues = "https://github.com/honeworks/hone-taste/issues"
+Documentation = "https://github.com/honeworks/hone-taste/tree/main/docs"
+Changelog = "https://github.com/honeworks/hone-taste/blob/main/CHANGELOG.md"
+
+[project.scripts]
+hone-taste = "hone_taste.cli:app"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/hone_taste/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hone_taste"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/", "tests/", "docs/", "examples/", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "pyproject.toml"]
+exclude = ["design/", ".hone/"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["src", "tests"]
+extend-exclude = ["design"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PT", "N", "S", "C4", "DTZ", "PL", "C90"]
+ignore = ["PLR0913", "PLR2004", "N818"]  # N818: public error names (MissingExtra, ModelUnavailable) predate the rule
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S603", "PLR0915", "N802", "PLC0415"]
+"src/hone_taste/testing/contracts.py" = ["S101"]  # contract checkers are assertions by design
+"examples/**" = ["S101", "S603", "PT"]  # examples assert what they show (plain asserts, not pytest) and run the CLI
+
+[tool.pyright]
+include = ["src", "tests", "examples"]
+strict = ["src"]
+pythonVersion = "3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src"]
+addopts = "-ra --strict-markers --doctest-modules -m 'not gpu and not ollama'"
+timeout = 120
+markers = [
+    "e2e: acceptance-case tests (run by default)",
+    "gpu: needs the shared GPU; run via scripts/gpu-lock.sh",
+    "ollama: needs a running Ollama",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src/hone_taste"]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "@overload", "\\.\\.\\."]
+
+[tool.uv]
+# Development lock only; users of the package get any torch >= 2.2. One torch build is pinned so the
+# honeworks repositories resolve the same torch / CUDA stack for their development environments.
+constraint-dependencies = ["torch==2.10.0", "torchaudio==2.10.0", "torchvision==0.25.0"]

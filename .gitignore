@@ -1,0 +1,51 @@
+# virtual environments
+.venv/
+venv/
+env/
+
+# Python caches and build artefacts
+__pycache__/
+*.py[cod]
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# tool caches and coverage
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# hone records and generated output
+.hone/
+out/
+runs/
+
+# generated media and model files
+*.wav
+*.flac
+*.mp3
+*.ogg
+*.m4a
+*.mp4
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+
+# secrets
+.env
+.env.*
+
+# editors and OS files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+*.log

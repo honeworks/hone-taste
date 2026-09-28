@@ -1,0 +1,37 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: { python: ["3.11", "3.12", "3.13"] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "${{ matrix.python }}", enable-cache: true }
+      # Light extras only: the default suite runs without torch / transformers / CUDA. The heavy extras
+      # (text, detect, images, songs) are covered by the real-model tests (-m gpu), run locally.
+      - run: uv sync --frozen --extra cli --extra openai --group audio-tests
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pyright
+      - run: uv run pytest --cov --cov-fail-under=90
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv build
+      - name: Smoke test the wheel in a clean env
+        run: |
+          uv venv /tmp/smoke
+          uv pip install --python /tmp/smoke/bin/python dist/*.whl
+          /tmp/smoke/bin/python -c "import hone_taste; print(hone_taste.__version__)"
+          /tmp/smoke/bin/python tests/smoke_quickstart.py
+      - uses: actions/upload-artifact@v4
+        with: { name: dist, path: dist/ }

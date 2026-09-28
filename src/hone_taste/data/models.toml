@@ -1,0 +1,67 @@
+# Heavy models hone-taste can wrap: whose taste they learned, their license, and what they need.
+# `license_clear = false` means the weights' terms are not stated clearly: the scorer then needs
+# `accept_license=True` (read the terms at `url` first). Checked 2026-09-27; see design/decisions.md, D-016.
+
+[songeval]
+model_id = "ASLP-lab/SongEval"
+url = "https://github.com/ASLP-lab/SongEval"
+checkpoint_url = "https://raw.githubusercontent.com/ASLP-lab/SongEval/main/ckpt/model.safetensors"
+license = "unclear: README says CC-BY-NC-SA-4.0 (non-commercial) for the project, repository metadata says Apache-2.0; MuQ encoder weights CC-BY-NC-4.0 (non-commercial)"
+license_clear = false
+source_data = "SongEval: 2,399 full-length songs (over 140 h) rated on five aesthetic dimensions by 16 annotators with music backgrounds"
+vram_gb = 3.0
+extra = "songs"
+
+[reward_model]
+model_id = "Skywork/Skywork-Reward-V2-Qwen3-0.6B"
+url = "https://huggingface.co/Skywork/Skywork-Reward-V2-Qwen3-0.6B"
+license = "Apache-2.0"
+license_clear = true
+source_data = "Skywork-SynPref-40M: preference pairs curated by a human-verified, AI-assisted pipeline"
+vram_gb = 2.0
+extra = "text"
+
+[pickscore]
+model_id = "yuvalkirstain/PickScore_v1"
+url = "https://huggingface.co/yuvalkirstain/PickScore_v1"
+license = "not stated on the model card (Pick-a-Pic dataset: MIT; CLIP-H processor: MIT)"
+license_clear = false
+source_data = "Pick-a-Pic: pairwise preferences of web-app users between generated images for their own prompts"
+vram_gb = 4.0
+extra = "images"
+
+[hpsv3]
+model_id = "MizzenAI/HPSv3"
+url = "https://github.com/MizzenAI/HPSv3"
+license = "Apache-2.0 (weights), MIT (code)"
+license_clear = true
+source_data = "HPDv3: about 1.08M text-image pairs and 1.17M pairwise comparisons annotated by humans"
+vram_gb = 18.0
+extra = "images"
+
+[audiobox]
+model_id = "facebook/audiobox-aesthetics"
+url = "https://github.com/facebookresearch/audiobox-aesthetics"
+license = "CC-BY-4.0"
+license_clear = true
+source_data = "Meta's aesthetics annotations: speech, music and sound clips rated on four axes by trained raters (arXiv:2502.05139)"
+vram_gb = 2.0
+extra = "songs"
+
+[binoculars]
+model_id = "Qwen/Qwen2.5-0.5B + Qwen/Qwen2.5-0.5B-Instruct"
+url = "https://github.com/ahans30/Binoculars"
+license = "Apache-2.0 (default observer and performer models); method code BSD-3-Clause"
+license_clear = true
+source_data = "no human ratings: zero-shot perplexity / cross-perplexity ratio of two related language models"
+vram_gb = 3.0
+extra = "detect"
+
+[dinov2_small]
+model_id = "facebook/dinov2-small"
+url = "https://huggingface.co/facebook/dinov2-small"
+license = "Apache-2.0"
+license_clear = true
+source_data = "no human ratings: self-supervised image features (DINOv2, trained on the curated LVD-142M image set); used for character_consistency"
+vram_gb = 0.5
+extra = "images"

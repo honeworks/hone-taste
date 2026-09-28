@@ -1,0 +1,34 @@
+{
+  "domain": "text",
+  "scorer": "reward_model",
+  "model_id": "Skywork/Skywork-Reward-V2-Qwen3-0.6B",
+  "source": "raw rewards of the default model on 12 hand-written prompts, each with a correct, helpful answer (good) and a wrong, off-topic or unhelpful one (bad); scripts/make_reference_sets.py",
+  "good": [
+    2.6406,
+    -0.3477,
+    2.4375,
+    4.3438,
+    4.2188,
+    -1.5547,
+    1.5781,
+    0.6758,
+    3.1094,
+    -0.8711,
+    2.6562,
+    5.2188
+  ],
+  "bad": [
+    -5.6562,
+    -0.3008,
+    -5.6875,
+    -3.25,
+    -5.125,
+    -6.625,
+    -6.0938,
+    -6.2188,
+    -6.625,
+    -3.0938,
+    -5.1562,
+    1.0781
+  ]
+}
